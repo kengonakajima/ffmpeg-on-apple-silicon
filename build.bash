@@ -66,7 +66,7 @@ fi
 echo "Cloning required git repositories"
 git clone --depth 1 -b master https://code.videolan.org/videolan/x264.git $CMPLD/x264 &
 git clone --depth 1 -b origin https://github.com/rbrito/lame.git $CMPLD/lame &
-git clone --depth 1 -b master https://github.com/webmproject/libvpx $CMPLD/libvpx &
+#git clone --depth 1 -b master https://github.com/webmproject/libvpx $CMPLD/libvpx &
 git clone --depth 1 -b master https://github.com/FFmpeg/FFmpeg $CMPLD/ffmpeg &
 git clone --depth 1 -b v2.0.1 https://aomedia.googlesource.com/aom.git $CMPLD/aom &
 wait
@@ -342,8 +342,8 @@ function build_harfbuzz () {
     echo '♻️ ' Start compiling harfbuzz
     cd ${CMPLD}
     cd harfbuzz-2.7.2
-    ./configure --prefix=${SRC} --disable-shared --enable-static
-    make -j ${NUM_PARALLEL_BUILDS}
+    ./configure --prefix=${SRC} --disable-shared --enable-static 
+    make -j ${NUM_PARALLEL_BUILDS} CPPFLAGS="-DHB_NO_PRAGMA_GCC_DIAGNOSTIC_ERROR"
     make install
   fi
 }
@@ -436,9 +436,9 @@ function build_ffmpeg () {
   export LDFLAGS="$LDFLAGS -lexpat -lenca -lfribidi -liconv -lstdc++ -lfreetype -framework CoreText -framework VideoToolbox"
   ./configure --prefix=${SRC} --extra-cflags="-fno-stack-check" --arch=${ARCH} --cc=/usr/bin/clang \
               --enable-fontconfig --enable-gpl --enable-libopus --enable-libtheora --enable-libvorbis \
-              --enable-libmp3lame --enable-libass --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libvpx \
+              --enable-libmp3lame --enable-libass --enable-libfreetype --enable-libx264 --enable-libx265  \
               --enable-libaom --enable-libvidstab --enable-libsnappy --enable-version3 --pkg-config-flags=--static \
-              --disable-ffplay --enable-postproc --enable-nonfree --enable-runtime-cpudetect
+              --disable-ffplay --enable-postproc --enable-runtime-cpudetect
   echo "build start"
   start_time="$(date -u +%s)"
   make -j ${NUM_PARALLEL_BUILDS}
@@ -458,7 +458,7 @@ build_zlib
 build_lame
 build_x264
 build_x265
-build_vpx
+#build_vpx
 build_expat
 build_libiconv
 build_enca
